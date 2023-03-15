@@ -12,7 +12,7 @@ class CreateCryptocurrencyPricesTable extends Migration
             $table->id();
             $table->string('coin');
             $table->float('price');
-            $table->timestamp('timestamp')->useCurrent();
+            $table->timestamps();
         });
     }
 
