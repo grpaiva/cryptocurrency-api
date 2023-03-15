@@ -3,6 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CryptocurrencyController;
+use App\Http\Controllers\AuthController;
 
-Route::get('/cryptocurrency/{coin}', [CryptocurrencyController::class, 'getSinglePrice']);
-Route::get('/cryptocurrency', [CryptocurrencyController::class, 'getAllPrices']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/cryptocurrency/{coin}', [CryptocurrencyController::class, 'getSinglePrice']);
+    Route::get('/cryptocurrency', [CryptocurrencyController::class, 'getAllPrices']);
+});
