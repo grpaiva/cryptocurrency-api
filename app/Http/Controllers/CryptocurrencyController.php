@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CryptocurrencyPrice;
 use Illuminate\Http\Request;
 
 class CryptocurrencyController extends Controller
@@ -18,11 +19,20 @@ class CryptocurrencyController extends Controller
 
     public function getAllPrices()
     {
+        $user = auth()->user();
         $client = new \GuzzleHttp\Client();
         $response = $client->request('GET', "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin&vs_currencies=usd");
 
         $prices = json_decode($response->getBody(), true);
 
-        return response()->json(['prices' => $prices]);
+        foreach ($prices as $coin => $data) {
+            $price = new CryptocurrencyPrice([
+                'coin' => $coin,
+                'price' => $data['usd'],
+            ]);
+            $price->save();
+        }
+
+        return response()->json(['message' => 'Cryptocurrency prices stored successfully']);
     }
 }
